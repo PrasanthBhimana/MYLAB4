@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, ScrollView, TouchableOpacity } from 'react-native';
 import { signInWithEmailAndPassword } from './firebase'; // Firebase function
 import { useNavigation } from '@react-navigation/core';
@@ -9,6 +9,19 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigation = useNavigation();
+
+  // useEffect hook to check auth state and navigate accordingly
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // If the user is logged in, navigate to the HomeScreen
+        navigation.replace('HomeScreen');
+      }
+    });
+
+    // Cleanup function to unsubscribe when the component unmounts
+    return unsubscribe;
+  }, []);
 
   const handleSignIn = () => {
     signInWithEmailAndPassword(auth, email, password)
