@@ -1,5 +1,4 @@
-// SignUp.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, Alert, Platform, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import RNPickerSelect from 'react-native-picker-select';
@@ -16,6 +15,17 @@ const Register = ({ navigation }) => {
   const [gender, setGender] = useState(null);
   const [biography, setBiography] = useState('');
   const [error, setError] = useState('');
+
+  // useEffect hook to check auth state and navigate to Home if user is already logged in
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        navigation.replace('HomeScreen'); // Automatically navigate if user is authenticated
+      }
+    });
+
+    return unsubscribe; // Cleanup listener on component unmount
+  }, []);
 
   const handleDateChange = (event, selectedDate) => {
     const currentDate = selectedDate || birthdate;
